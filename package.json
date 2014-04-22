@@ -1,0 +1,15 @@
+{
+  "name": "regen",
+  "version": "0.0.1",
+  "description": "Generate files with a 1-to-1 dependency",
+  "author": "Romain Prieto",
+  "license": "MIT",
+  "keywords": ["make", "files", "build", "dependencies"],
+  "main": "src/index.js",
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "glob": "~3.2.9",
+    "async": "~0.7.0",
+    "mkdirp": "~0.3.5"
+  }
+}
