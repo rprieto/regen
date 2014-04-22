@@ -6,6 +6,10 @@
   "license": "MIT",
   "keywords": ["make", "files", "build", "dependencies"],
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rprieto/regen.git"
+  },
   "dependencies": {
     "lodash": "~2.4.1",
     "glob": "~3.2.9",

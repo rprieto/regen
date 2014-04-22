@@ -14,6 +14,8 @@
 # API
 
 ```
+var regen = require('regen');
+
 regen({
   source:  /* source folder */,
   filter:  /* source file filter */,
@@ -24,17 +26,17 @@ regen({
 
 # Arguments
 
-- `source`
+### `source`
 
 The folder containing source files.  
 This is relative to the current process `cwd`.
 
-- `filter` 
+### `filter` 
 
 A [glob](https://www.npmjs.org/package/glob) filter to pick source files.  
 Examples: `**/*`, `**/*.jpg`, `lib/*.c`, `**/*.{txt,md}`
 
-- `dest`
+### `dest`
 
 A function to derive the destination file path from each source.
 
@@ -51,7 +53,7 @@ Instead of a function, you can also pass in a string with the following tokens:
 'bin/$path/$name_checksum.$ext'
 ```
 
-- `process`
+### `process`
 
 A function to be executed on each source file.  
 Files are processed in parallel - up to the number of CPUs.
@@ -62,7 +64,7 @@ function process(src, dest, callback) {
 }
 ```
 
-# Examples
+# Example
 
 ```js
 function checksum(src, dest, callback) {
