@@ -6,57 +6,83 @@
 
 [![NPM](https://nodei.co/npm/regen.png)](https://www.npmjs.org/package/regen)
 
-- Globs to filter which files to process
+- Uses globs to pick which files to process
+- Supports both an "easy" syntax and custom functions
 - Only processes files when the source has changed
-- Supports async functions
+- Full async / concurrency support
 - Creates any required destination folders
 
-# API
+# Example
 
-```
+Take a screenshot of all your movies:
+
+```js
 var regen = require('regen');
 
 regen({
-  source:  /* source folder */,
-  filter:  /* source file filter */,
-  dest:    /* how to generate output file names */,
-  process: /* async function to run on each file */
+  cwd:     './movies',
+  src:     '**/*.{mp4,mov}',
+  dest:    '../thumbs/$path/$name.jpg',
+  process: 'ffmpeg $src -vframes 1 -y $dest'
 }, callback);
 ```
 
-# Arguments
+# API
 
-### `source`
+```js
+regen({
+  cwd:     /* the directory from which to to resolve paths */,
+  src:     /* source file filter */,
+  dest:    /* how to generate output file names */,
+  process: /* async operation to run on each file */
+}, callback);
+```
 
-The folder containing source files.  
-This is relative to the current process `cwd`.
+### `cwd`
 
-### `filter` 
+The directory from which `src` and `dest` paths are resolved. `cwd` can be an absolute path, or relative to the current process.
 
-A [glob](https://www.npmjs.org/package/glob) filter to pick source files.  
-Examples: `**/*`, `**/*.jpg`, `lib/*.c`, `**/*.{txt,md}`
+### `src` 
+
+A [glob](https://www.npmjs.org/package/glob) filter to pick source files, relative to `cwd`.  For example:
+
+- `**/*` all files
+- `**/lib*.c` all *c* files starting with *"lib"*
+- `photos/*.jpg` all *jpg* files in *"photos"*
+- `**/*.{txt,md}` both *txt* and *md* files
+
+Note: all globs must use forward slashes, even on Windows.
 
 ### `dest`
 
-A function to derive the destination file path from each source.
+A function to derive the destination file path from each source.  
+It must return either an absolute path, or a relative path from `cwd`.
 
 ```js
 function dest(src) {
-  // src is a relative path in the 'source' folder
+  // the 'src' param is a relative path from 'cwd'
   return path.join('bin', src.replace('.txt', '_checksum.txt'));
 }
 ```
 
 Instead of a function, you can also pass in a string with the following tokens:
 
-```js
-'bin/$path/$name_checksum.$ext'
-```
+- `$path` relative path of the source file in `cwd`
+- `$name` source file name, without the extension or the `.`
+- `$ext` source file extension, without the `.`
+
+Examples:
+
+- `/absolute/output/$name.$ext`
+- `relative/$path/$name_suffix.$ext`
+
+Note: this path syntax must use forward slashes, even on Windows.
 
 ### `process`
 
-A function to be executed on each source file.  
-Files are processed in parallel - up to the number of CPUs.
+The async operation to be executed on each file. It will only run if the destination does not exist, or if the source file has changed since. Files are processed in parallel, up to the number of CPUs.
+
+It can be either a function:
 
 ```js
 function process(src, dest, callback) {
@@ -64,17 +90,11 @@ function process(src, dest, callback) {
 }
 ```
 
-# Example
+Or a string to be executed with [child_process.exec](http://nodejs.org/api/child_process.html), with the following tokens:
 
-```js
-function checksum(src, dest, callback) {
-  require('child_process').exec('cat ' + src + ' | md5 > ' + dest, callback);
-}
+- `$src` the full path to the source file
+- `$dest` the full path to the destination file
 
-regen({
-  source:  'src',
-  filter:  '**/*.tar',
-  dest:    'src/$path/$name.md5',
-  process: checksum
-}, callback);
-```
+Examples:
+
+- `ffmpeg $src -vframes 1 -y $dest`
