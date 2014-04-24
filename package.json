@@ -1,6 +1,6 @@
 {
   "name": "regen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Generate files with a 1-to-1 dependency",
   "author": "Romain Prieto",
   "license": "MIT",
