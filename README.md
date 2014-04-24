@@ -100,3 +100,4 @@ Or a string to be executed with [child_process.exec](http://nodejs.org/api/child
 Examples:
 
 - `ffmpeg $src -vframes 1 -y $dest`
+- `cat $src | md5 > $dest`
