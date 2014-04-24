@@ -5,12 +5,12 @@ var path  = require('path');
 exports.outOfDate = function(task) {
   var srcTime = 0;
   try {
-    var srcTime  = fs.statSync(task.src).ctime.getTime();
+    var srcTime  = fs.statSync(task.src).mtime.getTime();
   } catch (ex) {
     return false;
   }
   try {
-    var destTime = fs.statSync(task.dest).ctime.getTime();
+    var destTime = fs.statSync(task.dest).mtime.getTime();
     return srcTime > destTime;
   } catch (ex) {
     return true;
