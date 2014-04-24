@@ -16,7 +16,7 @@ module.exports = function(opts, callback) {
   }
 
   if (typeof opts.dest === 'string') {
-    opts.dest = pattern.dest(opts.dest);
+    opts.dest = patterns.dest(opts.dest);
   }
 
   if (typeof opts.process === 'string') {
