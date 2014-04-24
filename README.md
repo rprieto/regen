@@ -6,6 +6,8 @@
 
 [![NPM](https://nodei.co/npm/regen.png)](https://www.npmjs.org/package/regen)
 
+[![Travis CI](https://api.travis-ci.org/rprieto/regen.png)](https://travis-ci.org/rprieto/regen) [![Dependency Status](https://david-dm.org/rprieto/regen.png?theme=shields.io)](https://david-dm.org/rprieto/regen) [![devDependency Status](https://david-dm.org/rprieto/regen/dev-status.png?theme=shields.io)](https://david-dm.org/rprieto/regen#info=devDependencies)
+
 - Uses globs to pick which files to process
 - Supports both an "easy" syntax and custom functions
 - Only processes files when the source has changed
