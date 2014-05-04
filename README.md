@@ -33,10 +33,11 @@ regen({
 
 ```js
 regen({
-  cwd:     /* the directory from which to to resolve paths */,
-  src:     /* source file filter */,
-  dest:    /* how to generate output file names */,
-  process: /* async operation to run on each file */
+  cwd:       /* the directory from which to to resolve paths */,
+  src:       /* source file filter */,
+  dest:      /* how to generate output file names */,
+  process:   /* async operation to run on each file */,
+  parallel:  /* concurrency level (optional) */
 }, callback);
 ```
 
@@ -101,3 +102,13 @@ Examples:
 
 - `ffmpeg $src -vframes 1 -y $dest`
 - `cat $src | md5 > $dest`
+
+### `parallel`
+
+You can specify if the `process` operations should be run in parallel for faster processing. For example, disk-bound operations are usually better done in series, but CPU intensive ones can easily be distributed.
+
+The value can be either:
+
+- `0`: all operations are done in series (default)
+- `{number}`: run at most N operations concurrently
+- `'cpu'`: run as many operations as there are CPUs / cores

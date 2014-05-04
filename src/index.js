@@ -23,6 +23,12 @@ module.exports = function(opts, callback) {
     opts.process = patterns.process(opts.process);
   }
 
+  if (typeof opts.parallel === 'cpu') {
+    opts.parallel = os.cpus().length;
+  }
+
+  opts.parallel = opts.parallel || 0;
+
   var globOptions = {
     cwd: opts.cwd,
     nonull: false,
@@ -41,9 +47,15 @@ module.exports = function(opts, callback) {
     var folders = tasks.destinationFolders(all);
     folders.forEach(function(f) { mkdirp.sync(f, 0777); });
 
-    // run all tasks in parallel
+    // list of actual operations
     var fns = all.map(tasks.run(opts.process));
-    async.parallelLimit(fns, os.cpus().length, callback);
+
+    // run them!
+    if (opts.parallel > 0) {
+      async.parallelLimit(fns, opts.parallel, callback);
+    } else {
+      async.series(fns, callback);
+    }
 
   });
 
