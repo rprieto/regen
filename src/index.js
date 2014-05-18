@@ -1,10 +1,9 @@
-var os       = require('os');
 var path     = require('path');
 var glob     = require('glob');
 var async    = require('async');
 var mkdirp   = require('mkdirp');
-var patterns = require('./patterns');
 var tasks    = require('./tasks');
+var options  = require('./options');
 
 module.exports = function(opts, callback) {
 
@@ -15,19 +14,7 @@ module.exports = function(opts, callback) {
     };
   }
 
-  if (typeof opts.dest === 'string') {
-    opts.dest = patterns.dest(opts.dest);
-  }
-
-  if (typeof opts.process === 'string') {
-    opts.process = patterns.process(opts.process);
-  }
-
-  if (typeof opts.parallel === 'cpu') {
-    opts.parallel = os.cpus().length;
-  }
-
-  opts.parallel = opts.parallel || 0;
+  var opts = options.parse(opts);
 
   var globOptions = {
     cwd: opts.cwd,
