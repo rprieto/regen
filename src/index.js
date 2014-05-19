@@ -7,6 +7,8 @@ var options  = require('./options');
 
 module.exports = function(opts, callback) {
 
+  var opts = options.parse(opts);
+
   function createTask(file) {
     return {
       src:  path.resolve(opts.cwd, file),
@@ -14,7 +16,15 @@ module.exports = function(opts, callback) {
     };
   }
 
-  var opts = options.parse(opts);
+  function report(total, outdated, processed) {
+    if (opts.report) {
+      opts.report({
+        totalFiles: total,
+        outdated: outdated,
+        processed: processed
+      });
+    }
+  }
 
   var globOptions = {
     cwd: opts.cwd,
@@ -27,17 +37,26 @@ module.exports = function(opts, callback) {
     if (err) return callback(err);
 
     // list of tasks that need rebuilding
-    var all = files.map(createTask)
-                   .filter(tasks.outOfDate);
+    var all = files.map(createTask);
+    var outdated = all.filter(tasks.outOfDate);
 
     // create any required folders
     var folders = tasks.destinationFolders(all);
     folders.forEach(function(f) { mkdirp.sync(f, 0777); });
 
     // list of actual operations
-    var fns = all.map(tasks.run(opts.process));
+    var processed = 0;
+    var fns = outdated.map(function(task) {
+      return function(next) {
+        opts.process(task.src, task.dest, function(err) {
+          report(all.length, outdated.length, ++processed);
+          next(err);
+        });
+      };
+    });
 
     // run them!
+    report(all.length, outdated.length, 0);
     if (opts.parallel > 0) {
       async.parallelLimit(fns, opts.parallel, callback);
     } else {

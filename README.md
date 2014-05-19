@@ -22,10 +22,12 @@ Take a screenshot of all your movies:
 var regen = require('regen');
 
 regen({
-  cwd:     './movies',
-  src:     '**/*.{mp4,mov}',
-  dest:    '../thumbs/$path/$name.jpg',
-  process: 'ffmpeg $src -vframes 1 -y $dest'
+  cwd:      './movies',
+  src:      '**/*.{mp4,mov}',
+  dest:     '../thumbs/$path/$name.jpg',
+  process:  'ffmpeg $src -vframes 1 -y $dest',
+  parallel: 'cpu',
+  report:   'Taking screenshots $progress'
 }, callback);
 ```
 
@@ -37,7 +39,8 @@ regen({
   src:       /* source file filter */,
   dest:      /* how to generate output file names */,
   process:   /* async operation to run on each file */,
-  parallel:  /* concurrency level (optional) */
+  parallel:  /* concurrency level (optional) */,
+  report:    /* callback to report progress of operations */
 }, callback);
 ```
 
@@ -112,3 +115,28 @@ The value can be either:
 - `0`: all operations are done in series (default)
 - `{number}`: run at most N operations concurrently
 - `'cpu'`: run as many operations as there are CPUs / cores
+
+### `report`
+
+`regen` can optionally report on the status of the operations.
+
+You can pass a custom callback, that will be called once before any operation starts, and then after each file has been processed.
+
+```js
+regen({ report: progress });
+
+function progress(stats) {
+  // stats.totalFiles = number of files matching the <src> pattern
+  // stats.outdated   = number of files that needed regen
+  // stats.processed  = number of files processed so far
+}
+```
+
+Alternatively, you can pass a string value to display a progress bar in the console:
+
+```js
+regen({ report: 'Taking screenshots $progress' })
+
+// Taking screenshots [===       ] 4 / 15 files
+```
+

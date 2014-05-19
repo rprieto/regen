@@ -20,9 +20,3 @@ exports.outOfDate = function(task) {
 exports.destinationFolders = function(tasks) {
   return _(tasks).pluck('dest').map(path.dirname).uniq().value();
 };
-
-exports.run = function(process) {
-  return function(task) {
-    return process.bind(this, task.src, task.dest);
-  };
-};

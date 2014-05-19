@@ -1,5 +1,6 @@
-var path = require('path');
-var childProcess = require('child_process');
+var path          = require('path');
+var childProcess  = require('child_process');
+var ProgressBar   = require('progress');
 
 exports.dest = function(pattern) {
   var absolutePrefix = (pattern[0] === '/') ? '/' : '';
@@ -18,5 +19,20 @@ exports.process = function(pattern) {
     var command = pattern.replace('$src', '"' + src + '"')
                          .replace('$dest', '"' + dest + '"');
     childProcess.exec(command, callback);
+  };
+};
+
+exports.report = function(pattern) {
+  var bar = null;
+  var format = pattern.replace('$progress', '[:bar] :current/:total files');
+  return function(stats) {
+    if (stats.processed === 0) {
+      bar = new ProgressBar(format, {
+        total: stats.totalFiles,
+        width: 20
+      });
+    } else {
+      bar.tick();
+    }
   };
 };
