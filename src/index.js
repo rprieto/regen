@@ -17,13 +17,11 @@ module.exports = function(opts, callback) {
   }
 
   function report(total, outdated, processed) {
-    if (opts.report) {
-      opts.report({
-        totalFiles: total,
-        outdated: outdated,
-        processed: processed
-      });
-    }
+    opts.report({
+      totalFiles: total,
+      outdated: outdated,
+      processed: processed
+    });
   }
 
   var globOptions = {
