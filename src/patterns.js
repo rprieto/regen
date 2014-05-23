@@ -28,7 +28,7 @@ exports.report = function(pattern) {
   return function(stats) {
     if (stats.processed === 0) {
       bar = new ProgressBar(format, {
-        total: stats.totalFiles,
+        total: stats.outdated,
         width: 20
       });
     } else {
