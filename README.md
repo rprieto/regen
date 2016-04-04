@@ -139,4 +139,3 @@ regen({ report: 'Taking screenshots $progress' })
 
 // Taking screenshots [===       ] 4 / 15 files
 ```
-
